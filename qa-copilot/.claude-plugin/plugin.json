@@ -1,0 +1,24 @@
+{
+  "name": "qa-copilot",
+  "version": "0.1.0",
+  "description": "QA automation agents for API integration testing with Postman, Newman, and Azure DevOps. Human-in-the-loop assistants that analyze codebases, generate test collections, and provide diagnostics.",
+  "author": {
+    "name": "QA Automation Team"
+  },
+  "license": "MIT",
+  "keywords": [
+    "qa",
+    "testing",
+    "automation",
+    "api-testing",
+    "postman",
+    "newman",
+    "azure-devops",
+    "integration-testing"
+  ],
+  "category": "testing",
+  "commands": "./commands/",
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}

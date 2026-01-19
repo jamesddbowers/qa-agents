@@ -1,0 +1,17 @@
+{
+  "description": "QA automation hooks for validation and enforcement",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Verify this file operation follows qa-copilot guardrails: writing only to safe output locations (qa-agent-output/, docs/generated/, postman/, ado/) and not modifying application source code.",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
