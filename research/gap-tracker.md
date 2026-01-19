@@ -6,8 +6,24 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 - **Not Started**: No research or implementation yet
 - **Research Needed**: Need external sources or documentation
+- **Source Found**: Source identified, queued for extraction
 - **In Progress**: Have some patterns, building out
 - **Complete**: Ready for testing
+
+---
+
+## Coverage Summary (Post 35-Source Evaluation)
+
+| MVP Step | Primary Sources | Coverage Status |
+|----------|-----------------|-----------------|
+| Step 1 (Endpoint Inventory) | documate, logicscope | Source Found |
+| Step 2 (Auth Discovery) | documate, backend-api-security-agents | Source Found |
+| Step 3 (Telemetry/Prioritization) | claude-code-templates-components (dynatrace-expert.md) | Source Found |
+| Step 4 (Tagging Conventions) | (derive from other sources) | Research Needed |
+| Step 5 (Postman Generation) | documate (OpenAPI), api-testing-observability | Partial |
+| Step 6 (Test Data Strategy) | testforge, dataforge, api-testing-observability | Source Found |
+| Step 7 (ADO Pipelines) | cicd-automation | Partial |
+| Step 8 (Diagnostics/Triage) | clauditor, backend-api-security-agents | Source Found |
 
 ---
 
@@ -15,27 +31,27 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `api-surface-extraction-agent` | Not Started | Full agent spec | API discovery agents, endpoint extraction prompts |
-| `repo-discovery-agent` | Not Started | Full agent spec | Codebase analysis agents |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `api-surface-extraction-agent` | Source Found | Full agent spec | **documate** (endpoint discovery, Spring Boot, ASP.NET), **logicscope** (data flow tracing) |
+| `repo-discovery-agent` | Source Found | Full agent spec | **documate** (framework detection), **backend-development** (api-design skill) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `endpoint-discovery/SKILL.md` | Not Started | Core instructions | - |
-| `endpoint-discovery/java-patterns.md` | Research Needed | Spring Boot, JAX-RS patterns | Spring Boot endpoint discovery examples |
-| `endpoint-discovery/js-ts-patterns.md` | Research Needed | Express, NestJS patterns | Node.js API discovery examples |
-| `endpoint-discovery/dotnet-patterns.md` | Research Needed | ASP.NET Core patterns | .NET API discovery examples |
-| `endpoint-discovery/openapi-generation.md` | Research Needed | OpenAPI draft generation | OpenAPI generation tools/patterns |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `endpoint-discovery/SKILL.md` | Source Found | Core instructions | **documate** patterns |
+| `endpoint-discovery/java-patterns.md` | Source Found | Spring Boot, JAX-RS patterns | **documate** (Spring Boot detection) |
+| `endpoint-discovery/js-ts-patterns.md` | Source Found | Express, NestJS patterns | **documate** (TypeScript support) |
+| `endpoint-discovery/dotnet-patterns.md` | Source Found | ASP.NET Core patterns | **documate** (ASP.NET detection) |
+| `endpoint-discovery/openapi-generation.md` | Source Found | OpenAPI draft generation | **documate** (OpenAPI 3.0 generation), **documentation-generation** |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `discover-endpoints.md` | Not Started | Full command spec |
-| `generate-openapi-draft.md` | Not Started | Full command spec |
+| `discover-endpoints.md` | Source Found | Full command spec |
+| `generate-openapi-draft.md` | Source Found | Full command spec |
 
 ---
 
@@ -43,25 +59,25 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `auth-access-discovery-agent` | Not Started | Full agent spec | Auth analysis agents |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `auth-access-discovery-agent` | Source Found | Full agent spec | **backend-api-security-agents** (OAuth/JWT/OIDC patterns) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `auth-patterns/SKILL.md` | Not Started | Core instructions | - |
-| `auth-patterns/oauth-patterns.md` | Research Needed | OAuth 2.0 flows | OAuth implementation guides |
-| `auth-patterns/jwt-patterns.md` | Research Needed | JWT handling | JWT auth patterns |
-| `auth-patterns/azure-ad-patterns.md` | Research Needed | Azure AD / Entra ID | Azure AD token acquisition docs |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `auth-patterns/SKILL.md` | Source Found | Core instructions | **backend-api-security-agents** |
+| `auth-patterns/oauth-patterns.md` | Source Found | OAuth 2.0 flows | **backend-api-security-agents** (OAuth patterns) |
+| `auth-patterns/jwt-patterns.md` | Source Found | JWT handling | **backend-api-security-agents** (JWT patterns) |
+| `auth-patterns/azure-ad-patterns.md` | Partial | Azure AD / Entra ID | Need Azure AD-specific docs |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `analyze-auth.md` | Not Started | Full command spec |
-| `generate-auth-helper.md` | Not Started | Full command spec |
+| `analyze-auth.md` | Source Found | Full command spec |
+| `generate-auth-helper.md` | Source Found | Full command spec |
 
 ---
 
@@ -69,24 +85,30 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `telemetry-prioritization-agent` | Not Started | Full agent spec | Telemetry analysis agents |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `telemetry-prioritization-agent` | Source Found | Full agent spec | **claude-code-templates-components/dynatrace-expert.md** (851 lines, complete DQL reference) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `dynatrace-analysis/SKILL.md` | Not Started | Core instructions | - |
-| `dynatrace-analysis/export-formats.md` | Research Needed | CSV/JSON export schemas | Dynatrace export documentation |
-| `dynatrace-analysis/prioritization-algorithms.md` | Research Needed | Ranking algorithms | Prioritization methodology docs |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `dynatrace-analysis/SKILL.md` | Source Found | Core instructions | **dynatrace-expert.md** |
+| `dynatrace-analysis/export-formats.md` | Source Found | CSV/JSON export schemas | **dynatrace-expert.md** (DQL query patterns, golden signals) |
+| `dynatrace-analysis/prioritization-algorithms.md` | Source Found | Ranking algorithms | **dynatrace-expert.md** (P95, error rate, throughput prioritization) |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `ingest-telemetry.md` | Not Started | Full command spec |
-| `prioritize-endpoints.md` | Not Started | Full command spec |
+| `ingest-telemetry.md` | Source Found | Full command spec |
+| `prioritize-endpoints.md` | Source Found | Full command spec |
+
+**Key Finding**: dynatrace-expert.md provides complete DQL query reference including:
+- Golden signals queries (P95 response time, error rate, throughput)
+- Service dependency mapping
+- SLO monitoring patterns
+- Entity relationship queries
 
 ---
 
@@ -94,23 +116,25 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `tagging-composition-agent` | Not Started | Full agent spec | Test strategy agents |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `tagging-composition-agent` | Research Needed | Full agent spec | (derive from testforge, api-testing-observability patterns) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `test-suite-conventions/SKILL.md` | Not Started | Core instructions | - |
-| `test-suite-conventions/tagging-standards.md` | Research Needed | Industry standards | Test tagging best practices |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `test-suite-conventions/SKILL.md` | Research Needed | Core instructions | - |
+| `test-suite-conventions/tagging-standards.md` | Research Needed | Industry standards | Need official Postman tagging docs |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `define-tagging.md` | Not Started | Full command spec |
-| `compose-smoke-set.md` | Not Started | Full command spec |
+| `define-tagging.md` | Research Needed | Full command spec |
+| `compose-smoke-set.md` | Research Needed | Full command spec |
+
+**Note**: No direct source found. Can derive patterns from testforge (test categorization) and api-testing-observability (scenario management).
 
 ---
 
@@ -118,25 +142,27 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `postman-authoring-agent` | Not Started | Full agent spec | Postman generation agents/prompts |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `postman-authoring-agent` | Partial | Full agent spec | **documate** (OpenAPI → Postman), **api-testing-observability** (test generation) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `postman-generation/SKILL.md` | Not Started | Core instructions | - |
-| `postman-generation/collection-schema.md` | Research Needed | Postman v2.1 schema | Postman schema docs |
-| `postman-generation/assertion-patterns.md` | Research Needed | pm.test, pm.expect | Postman scripting guides |
-| `postman-generation/chaining-patterns.md` | Research Needed | Variable extraction | Postman workflow examples |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `postman-generation/SKILL.md` | Partial | Core instructions | **api-testing-observability** patterns |
+| `postman-generation/collection-schema.md` | Research Needed | Postman v2.1 schema | **Need official Postman schema docs** |
+| `postman-generation/assertion-patterns.md` | Source Found | pm.test, pm.expect | **api-testing-observability** (assertion patterns) |
+| `postman-generation/chaining-patterns.md` | Source Found | Variable extraction | **api-testing-observability** (scenario management) |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `generate-postman.md` | Not Started | Full command spec |
-| `validate-collection.md` | Not Started | Full command spec |
+| `generate-postman.md` | Partial | Full command spec |
+| `validate-collection.md` | Research Needed | Full command spec |
+
+**Gap**: Postman Collection v2.1 schema reference not found in sources. Need official Postman documentation.
 
 ---
 
@@ -144,25 +170,25 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `data-model-dependency-agent` | Not Started | Full agent spec | Data analysis agents |
-| `test-data-seeding-agent` | Not Started | Full agent spec | Test data management agents |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `data-model-dependency-agent` | Source Found | Full agent spec | **logicscope** (data flow tracing, entity discovery) |
+| `test-data-seeding-agent` | Source Found | Full agent spec | **testforge** (test data factory), **dataforge** (schema generation) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `test-data-strategy/SKILL.md` | Not Started | Core instructions | - |
-| `test-data-strategy/seeding-patterns.md` | Research Needed | API seeding approaches | Test data best practices |
-| `test-data-strategy/cleanup-patterns.md` | Research Needed | Teardown strategies | - |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `test-data-strategy/SKILL.md` | Source Found | Core instructions | **testforge**, **dataforge** |
+| `test-data-strategy/seeding-patterns.md` | Source Found | API seeding approaches | **api-testing-observability** (Faker patterns), **dataforge** (type inference) |
+| `test-data-strategy/cleanup-patterns.md` | Partial | Teardown strategies | **testforge** (AAA pattern) |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `analyze-data-deps.md` | Not Started | Full command spec |
-| `generate-seed-collection.md` | Not Started | Full command spec |
+| `analyze-data-deps.md` | Source Found | Full command spec |
+| `generate-seed-collection.md` | Source Found | Full command spec |
 
 ---
 
@@ -170,24 +196,29 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `ado-pipeline-agent` | Not Started | Full agent spec | CI/CD agents |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `ado-pipeline-agent` | Partial | Full agent spec | **cicd-automation** (Azure DevOps YAML, approval gates) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `ado-pipeline-patterns/SKILL.md` | Not Started | Core instructions | - |
-| `ado-pipeline-patterns/newman-tasks.md` | Research Needed | Newman ADO config | Newman + ADO integration docs |
-| `ado-pipeline-patterns/reporting-patterns.md` | Research Needed | JUnit/HTML publishing | ADO reporting docs |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `ado-pipeline-patterns/SKILL.md` | Partial | Core instructions | **cicd-automation** |
+| `ado-pipeline-patterns/newman-tasks.md` | Research Needed | Newman ADO config | **Need Newman + ADO integration docs** |
+| `ado-pipeline-patterns/reporting-patterns.md` | Research Needed | JUnit/HTML publishing | **Need ADO test result publishing docs** |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `generate-pipeline.md` | Not Started | Full command spec |
-| `validate-pipeline.md` | Not Started | Full command spec |
+| `generate-pipeline.md` | Partial | Full command spec |
+| `validate-pipeline.md` | Research Needed | Full command spec |
+
+**Gaps Remaining**:
+- Newman task configuration in ADO (not found in sources)
+- Test result publishing to ADO (not found in sources)
+- ADO variable groups for environments (not found in sources)
 
 ---
 
@@ -195,45 +226,49 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 ### Agents
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `diagnostics-triage-agent` | Not Started | Full agent spec | Debugging/triage agents |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `diagnostics-triage-agent` | Source Found | Full agent spec | **clauditor** (diagnostics, failure triage, severity categorization) |
 
 ### Skills
 
-| Component | Status | Gaps | Sources Needed |
-| --------- | ------ | ---- | -------------- |
-| `failure-triage/SKILL.md` | Not Started | Core instructions | - |
-| `failure-triage/classification-matrix.md` | Research Needed | Failure taxonomy | Failure analysis methodologies |
-| `failure-triage/repro-generation.md` | Research Needed | Repro step patterns | - |
+| Component | Status | Gaps | Sources Found |
+| --------- | ------ | ---- | ------------- |
+| `failure-triage/SKILL.md` | Source Found | Core instructions | **clauditor** |
+| `failure-triage/classification-matrix.md` | Source Found | Failure taxonomy | **clauditor** (severity categorization), **backend-api-security-agents** |
+| `failure-triage/repro-generation.md` | Source Found | Repro step patterns | **clauditor** patterns |
 
 ### Commands
 
 | Component | Status | Gaps |
 | --------- | ------ | ---- |
-| `triage-failure.md` | Not Started | Full command spec |
-| `generate-repro.md` | Not Started | Full command spec |
+| `triage-failure.md` | Source Found | Full command spec |
+| `generate-repro.md` | Source Found | Full command spec |
 
 ---
 
-## Research Priorities
+## Research Priorities (Updated)
 
-### High Priority (Blocks Multiple Components)
+### Remaining Gaps (Require External Docs)
 
-1. **API endpoint discovery patterns** — Blocks Step 1 entirely
-2. **Postman collection schema** — Blocks Step 5 entirely
-3. **ADO YAML patterns** — Blocks Step 7 entirely
+| Gap | Status | Action Needed |
+|-----|--------|---------------|
+| Postman Collection v2.1 Schema | NOT FOUND | Add official Postman schema docs as source |
+| Newman ADO Task Config | NOT FOUND | Add Newman/Postman CLI docs for ADO integration |
+| ADO Test Result Publishing | NOT FOUND | Add Azure DevOps publishing task docs |
+| ADO Variable Groups | NOT FOUND | Add Azure DevOps variable group docs |
+| Azure AD/Entra Token Patterns | PARTIAL | Add Azure identity docs |
 
-### Medium Priority
+### Resolved by Source Evaluation
 
-4. **Auth flow patterns** — Blocks Step 2
-5. **Dynatrace export formats** — Blocks Step 3
-6. **Failure classification** — Blocks Step 8
-
-### Lower Priority (Can Build Incrementally)
-
-7. **Tagging conventions** — Can start with basic patterns
-8. **Test data strategies** — Can start with basic API seeding
+| Former Gap | Resolved By |
+|------------|-------------|
+| API endpoint discovery patterns | documate, logicscope |
+| Auth flow patterns | backend-api-security-agents |
+| Dynatrace export formats | dynatrace-expert.md (complete!) |
+| Failure classification | clauditor |
+| Test data strategies | testforge, dataforge, api-testing-observability |
+| OpenAPI generation | documate, documentation-generation |
 
 ---
 
@@ -243,9 +278,24 @@ This document tracks gaps in the qa-copilot plugin coverage and what research is
 
 For sources currently being evaluated:
 
-- **Stage 1 (README evaluation)**: See individual evaluations in `sources/possible-sources-to-utilize/[source-name]/evaluation.md`
-- **Stage 2 (Prioritization)**: See consolidated rankings in [source-priority-index.md](source-priority-index.md)
-- **Stage 3 (Full extraction)**: Documented below after extraction is complete
+- **Stage 1 (README evaluation)**: Complete - 36 sources evaluated
+- **Stage 2 (Prioritization)**: Complete - See [source-priority-index.md](source-priority-index.md)
+- **Stage 3 (Full extraction)**: Pending - 11 sources queued
+
+### Sources Queued for Extraction (Priority Order)
+
+| # | Source | Priority | MVP Steps | Key Patterns |
+|---|--------|----------|-----------|--------------|
+| 1 | plugin-dev + skill-creator | CRITICAL | ALL | Plugin structure + SKILL.md patterns (extract together) |
+| 2 | documate | CRITICAL | 1, 2, 5 | Endpoint discovery, OpenAPI |
+| 3 | claude-code-templates-components | CRITICAL | 3, 8 | dynatrace-expert.md |
+| 4 | clauditor | HIGH | 8 | Diagnostics, triage |
+| 5 | testforge | HIGH | 6 | Test categorization, factories |
+| 6 | cicd-automation | HIGH | 7 | Azure DevOps YAML |
+| 7 | backend-api-security-agents | HIGH | 2, 8 | OAuth/JWT/OIDC |
+| 8 | api-testing-observability | HIGH | 5, 6 | Test generation, Faker |
+| 9 | logicscope | HIGH | 1, 6 | Data flow, entity discovery |
+| 10 | dataforge | HIGH | 6 | Schema generation |
 
 ### Fully Extracted Sources
 
@@ -253,8 +303,6 @@ For sources currently being evaluated:
 | ------ | ---------- | ----------------- | ------ | -------- |
 | Claude Code Mastery V3 | 2026-01-16 | Architecture patterns | Integrated | `sources/claude-code-mastery-v3-extraction.md` |
 | (Additional sources will be added here after Stage 3 extraction) | | | | |
-
-**Note**: The staged research workflow (README → Priority → Full Extract) ensures we focus extraction efforts on highest-value sources. See CLAUDE.md Workflow section for details.
 
 ---
 
@@ -294,4 +342,5 @@ The following patterns from the guide are now integrated as baseline for all com
 
 ---
 
-*Last Updated: 2026-01-16*
+*Last Updated: 2026-01-19*
+*36 Sources Evaluated | 11 Queued for Extraction | 4 Gaps Remaining*

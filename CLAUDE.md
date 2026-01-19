@@ -38,6 +38,25 @@ Create a suite of QA automation agents that:
 4. **Single-Purpose Agents**: Design for focused tasks (39% performance drop when mixing topics)
 5. **Defense in Depth**: Behavioral rules → Access control → Git safety → Hooks
 
+### Foundational Pattern Sources (MUST USE)
+
+When building qa-copilot components, reference these CRITICAL sources:
+
+| Component Type | Reference Source | Location | Key Patterns |
+|----------------|------------------|----------|--------------|
+| **Plugin structure** | plugin-dev | `research/sources/possible-sources-to-utilize/plugin-dev/` | plugin.json, agents/, commands/, hooks/, skills/ organization |
+| **Skills (SKILL.md)** | skill-creator | `research/sources/possible-sources-to-utilize/skill-creator/` | YAML frontmatter, progressive disclosure, references/ organization |
+| **Agents** | plugin-dev | Same as above | Agent frontmatter with `<example>` blocks for triggering |
+| **Commands** | plugin-dev | Same as above | YAML frontmatter, argument handling |
+| **Hooks** | plugin-dev | Same as above | hooks.json structure, PreToolUse/PostToolUse patterns |
+
+**Skill Creation Rules** (from skill-creator):
+- Frontmatter `description` is the PRIMARY TRIGGERING MECHANISM - include all "when to use" info there
+- Keep SKILL.md body under 500 lines - move details to `references/` folder
+- Use domain-based organization for tech-stack variations (java-patterns.md, dotnet-patterns.md, etc.)
+- Prefer concise examples over verbose explanations
+- Match freedom level to task fragility (low freedom = specific scripts for fragile operations)
+
 ### MCP Status
 
 - **Phase 1 (MVP)**: No MCP connections — agents consume files/exports only
@@ -205,13 +224,53 @@ Once a source is prioritized and requested in full:
 3. **Feedback**: User reports findings back to this project
 4. **Iterate**: Refine agents based on feedback
 
-### Dual-Target (Future)
+### Multi-Platform Strategy
 
-After MVP works in Claude Code:
+This project has a **two-phase approach** with a research sub-phase:
 
-1. Document Claude Code → Copilot mapping
-2. Create Copilot-compatible versions in `copilot/` directory
-3. Test and iterate on Copilot versions
+#### Phase 1: Claude Code Plugin (CURRENT)
+
+Build qa-copilot as a fully functional Claude Code plugin first:
+- Get the plugin structure, agents, skills, commands, and hooks working correctly
+- Test against real repositories
+- Iterate based on feedback
+- This becomes the "reference implementation"
+
+**Why Claude Code first?**
+- Well-documented plugin system (plugin-dev, skill-creator sources)
+- Faster iteration cycle for testing patterns
+- Creates working patterns we can then port
+
+#### Phase 1.5: Copilot Research (REQUIRED BEFORE PHASE 2)
+
+Before porting to other platforms, conduct in-depth research on:
+
+| Platform | Research Needed |
+|----------|-----------------|
+| **GitHub Copilot** | Custom instructions, workspace agents, chat participants API |
+| **VS Code Extensions** | Extension API, language server protocol, webview panels |
+| **ChatGPT** | Custom GPTs, Actions, conversation starters |
+| **Gemini** | Gems, extensions, API patterns |
+
+**Research Questions:**
+1. What is the equivalent of a "skill" in each platform?
+2. How do agents/commands map to each platform's interaction model?
+3. What are the limitations vs Claude Code plugins?
+4. Can we create a common abstraction layer?
+
+**Output**: Document mapping patterns in `research/copilot-migration/` (to be created)
+
+#### Phase 2: Multi-Platform Port
+
+After research is complete:
+1. Create platform-specific versions in dedicated directories:
+   - `copilot/` — GitHub Copilot / VS Code
+   - `chatgpt/` — Custom GPT versions
+   - `gemini/` — Gemini equivalents (if applicable)
+2. Document the mapping from Claude Code → each platform
+3. Test and iterate on each platform version
+
+**Note**: Phase 1.5 research can happen in parallel with Phase 1 testing, or after Claude Code version is stable. Decision point: after MVP Steps 1-8 are working.
 
 ## Key References
 
