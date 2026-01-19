@@ -16,9 +16,5 @@
     "azure-devops",
     "integration-testing"
   ],
-  "category": "testing",
-  "commands": "./commands/",
-  "agents": "./agents/",
-  "skills": "./skills/",
   "hooks": "./hooks/hooks.json"
 }

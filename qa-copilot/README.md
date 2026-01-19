@@ -8,52 +8,90 @@ qa-copilot is a Claude Code plugin that provides human-in-the-loop QA automation
 
 ## Installation
 
+### Option 1: Session-based (for testing)
+
 ```bash
-# From the qa-agents repo root
-claude plugin add ./qa-copilot
+# Load plugin for current session only
+claude --plugin-dir ./qa-copilot
 ```
 
-## Features
+### Option 2: Project-level (recommended)
 
-### Phase 1 MVP (Current)
+Copy the plugin to your project's `.claude-plugins/` directory:
 
-| Command | Purpose |
-| ------- | ------- |
-| `/qa-copilot:discover-endpoints` | Discover API endpoints from code |
-| `/qa-copilot:analyze-auth` | Analyze authentication patterns |
-| `/qa-copilot:prioritize-endpoints` | Prioritize endpoints using telemetry data |
-| `/qa-copilot:generate-postman` | Generate Postman collections |
-| `/qa-copilot:generate-pipeline` | Generate Azure DevOps pipeline templates |
-| `/qa-copilot:triage-failure` | Diagnose and classify test failures |
+```bash
+# From your target project
+cp -r /path/to/qa-agents/qa-copilot .claude-plugins/
+```
 
-### Agents
+### Option 3: User-level
 
-| Agent | Purpose |
-| ----- | ------- |
-| `api-surface-extraction-agent` | Extract API surface from codebase |
-| `auth-access-discovery-agent` | Discover auth mechanisms |
-| `telemetry-prioritization-agent` | Prioritize based on Dynatrace data |
-| `postman-authoring-agent` | Generate Postman collections |
-| `ado-pipeline-agent` | Generate ADO pipeline templates |
-| `diagnostics-triage-agent` | Classify and diagnose failures |
+Copy to your user plugins directory:
 
-### Skills
+```bash
+# macOS/Linux
+cp -r ./qa-copilot ~/.claude/plugins/
 
-| Skill | Purpose |
-| ----- | ------- |
-| `endpoint-discovery` | Patterns for finding endpoints in Java/.NET/TS |
-| `auth-patterns` | OAuth, JWT, Azure AD token patterns |
-| `postman-generation` | Postman collection schema and assertions |
-| `ado-pipeline-patterns` | Azure DevOps YAML patterns |
-| `failure-triage` | Failure classification methodology |
+# Windows
+cp -r ./qa-copilot $env:USERPROFILE\.claude\plugins\
+```
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/discover-endpoints [path]` | Discover API endpoints and build inventory |
+| `/analyze-auth [path]` | Analyze authentication patterns for testing |
+| `/analyze-traffic [file]` | Analyze traffic data to prioritize test coverage |
+| `/generate-collection [type]` | Generate Postman collection (smoke/regression/full) |
+| `/generate-pipeline [type]` | Generate Azure DevOps pipeline (smoke/regression/scheduled) |
+| `/diagnose [results]` | Diagnose and triage test failures |
+
+## Agents
+
+| Agent | MVP Step | Purpose |
+|-------|----------|---------|
+| `endpoint-discoverer` | Step 1 | Discover API endpoints from code (Spring Boot, ASP.NET Core, Express, etc.) |
+| `auth-analyzer` | Step 2 | Analyze auth patterns for non-browser token acquisition |
+| `traffic-analyzer` | Step 3 | Analyze Dynatrace/APM exports to prioritize endpoints |
+| `collection-generator` | Step 5 | Generate tagged Postman collections with test scripts |
+| `pipeline-generator` | Step 7 | Generate Azure DevOps YAML pipelines for Newman |
+| `diagnostics-agent` | Step 8 | Diagnose test failures and provide remediation |
+
+## Workflow
+
+### Recommended Order
+
+1. **Discover endpoints**: `/discover-endpoints` or let the endpoint-discoverer agent analyze your codebase
+2. **Analyze auth**: `/analyze-auth` to understand how to authenticate for testing
+3. **Prioritize** (optional): `/analyze-traffic` if you have Dynatrace/APM data
+4. **Generate collection**: `/generate-collection smoke` for critical paths
+5. **Generate pipeline**: `/generate-pipeline smoke` for CI/CD integration
+6. **Run and diagnose**: Use `/diagnose` when tests fail
+
+### Example Session
+
+```
+> /discover-endpoints src/
+[Agent analyzes codebase, generates qa-agent-output/endpoint-inventory.md]
+
+> /analyze-auth
+[Agent documents auth patterns, generates qa-agent-output/auth-analysis.md]
+
+> /generate-collection smoke
+[Agent creates postman/project-smoke.postman_collection.json]
+
+> /generate-pipeline smoke
+[Agent creates ado/newman-smoke.yml]
+```
 
 ## Operating Principles
 
-1. **Read-only by default** — Agents don't modify app source code
+1. **Read-only by default** — Agents don't modify application source code
 2. **Human-in-the-loop** — Always ask permission before running commands or writing files
 3. **Safe output locations** — Write only to designated folders
 4. **Explainability** — Every inference includes source pointers and confidence levels
-5. **No pushing** — Generate commit/PR notes but never push code
+5. **No secrets in output** — Never expose credentials, tokens, or sensitive data
 
 ## Output Locations
 
@@ -64,16 +102,62 @@ postman/             # Collections and environments
 ado/                 # Pipeline templates
 ```
 
+## Guardrails (Hooks)
+
+The plugin includes prompt-based hooks that enforce safety:
+
+- **Write/Edit validation**: Only allows writes to safe output locations
+- **Read validation**: Prompts for confirmation when reading sensitive files (.env, credentials)
+- **Bash validation**: Blocks destructive commands, confirms risky operations
+- **Stop validation**: Verifies task completion and secret safety
+
 ## Tech Stack Support
 
-- **Backend**: Java (Spring Boot, JAX-RS), .NET (ASP.NET Core)
-- **Frontend**: HTML, JavaScript, CSS, TypeScript
-- **CI/CD**: Azure DevOps YAML pipelines
-- **Testing**: Postman/Newman
+### Backend Frameworks
+- **Java**: Spring Boot (@RestController, @RequestMapping), JAX-RS (@Path, @GET)
+- **.NET**: ASP.NET Core ([ApiController], [HttpGet], [Route])
+- **Node.js**: Express (app.get, router.post), NestJS (@Controller)
+- **Python**: FastAPI, Flask, Django REST Framework
+
+### Authentication Patterns
+- OAuth2 (authorization code, client credentials, resource owner password)
+- JWT (direct issuance, refresh tokens)
+- API Keys (header, query parameter)
+- Azure AD, Auth0, Okta
+
+### CI/CD
+- Azure DevOps YAML pipelines
+- Newman with JUnit and HTML reporters
+
+## File Structure
+
+```
+qa-copilot/
+├── .claude-plugin/
+│   └── plugin.json          # Plugin manifest
+├── agents/
+│   ├── endpoint-discoverer.md
+│   ├── auth-analyzer.md
+│   ├── traffic-analyzer.md
+│   ├── collection-generator.md
+│   ├── pipeline-generator.md
+│   └── diagnostics-agent.md
+├── commands/
+│   ├── discover-endpoints.md
+│   ├── analyze-auth.md
+│   ├── analyze-traffic.md
+│   ├── generate-collection.md
+│   ├── generate-pipeline.md
+│   └── diagnose.md
+├── hooks/
+│   └── hooks.json           # Safety guardrails
+├── skills/                  # Domain-specific knowledge (8 skills)
+└── README.md
+```
 
 ## Future Phases
 
-- **Phase 2**: Playwright framework hardening, Postman → Playwright forklift
+- **Phase 2**: Playwright framework hardening, Postman → Playwright migration
 - **Phase 3**: Developer enablement (unit/component testing)
 - **Phase 4**: UI E2E rationalization
 - **Phase 5**: k6 performance testing

@@ -1,5 +1,5 @@
 {
-  "description": "QA automation hooks for validation and enforcement",
+  "description": "QA automation hooks for validation and enforcement following human-in-the-loop guardrails",
   "hooks": {
     "PreToolUse": [
       {
@@ -7,7 +7,39 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Verify this file operation follows qa-copilot guardrails: writing only to safe output locations (qa-agent-output/, docs/generated/, postman/, ado/) and not modifying application source code.",
+            "prompt": "Validate this file operation follows qa-copilot guardrails:\n\n1. ALLOWED write locations:\n   - qa-agent-output/ (reports, inventories)\n   - docs/generated/ (OpenAPI drafts)\n   - postman/ (collections, environments)\n   - ado/ (pipeline templates)\n\n2. NEVER modify:\n   - Application source code (src/, app/, lib/)\n   - Configuration files (.env, secrets, credentials)\n   - Package files (package.json, pom.xml, *.csproj)\n\n3. If writing outside allowed locations, return 'deny' with explanation.\n4. If writing to allowed location, return 'allow'.",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Check if this file read request targets sensitive files:\n\n1. SENSITIVE files (require explicit user approval):\n   - .env, .env.*, secrets.json, credentials.json\n   - id_rsa, *.pem, *.key (private keys)\n   - **/secrets/**, **/credentials/**\n\n2. If reading a sensitive file, return 'ask' to request user confirmation.\n3. If reading normal files, return 'allow'.\n4. NEVER output the contents of sensitive files in responses.",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Validate this bash command follows qa-copilot safety rules:\n\n1. NEVER allow destructive commands:\n   - rm -rf, rm -r (recursive delete)\n   - drop database, truncate table\n   - git push --force to main/master\n   - Format/delete operations on system paths\n\n2. SAFE commands (allow):\n   - Read-only: ls, cat, grep, find, git status, git log\n   - Node/npm: npm install, npm test, newman run\n   - Git read: git diff, git show, git branch\n\n3. REQUIRES CONFIRMATION:\n   - Any write to files outside safe locations\n   - Git commits, git push (non-force)\n   - Package installations\n\n4. Return 'allow', 'deny', or 'ask' with explanation.",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before stopping, verify qa-copilot task completion:\n\n1. If generating output files:\n   - Were files written to correct locations?\n   - Was user confirmation obtained before writing?\n\n2. If analysis task:\n   - Were findings reported with source references?\n   - Were confidence levels indicated?\n\n3. If secrets/credentials were encountered:\n   - Were they NOT included in any output?\n\nReturn 'approve' if complete, 'block' with reason if more work needed.",
             "timeout": 30
           }
         ]

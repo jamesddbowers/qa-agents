@@ -1,0 +1,212 @@
+{
+  "collection": {
+    "info": {
+      "name": "Sample API Tests",
+      "_postman_id": "abc123-def456-ghi789"
+    }
+  },
+  "run": {
+    "stats": {
+      "iterations": { "total": 1, "pending": 0, "failed": 0 },
+      "items": { "total": 10, "pending": 0, "failed": 4 },
+      "scripts": { "total": 20, "pending": 0, "failed": 4 },
+      "prerequests": { "total": 10, "pending": 0, "failed": 0 },
+      "requests": { "total": 10, "pending": 0, "failed": 2 },
+      "tests": { "total": 15, "pending": 0, "failed": 4 },
+      "assertions": { "total": 15, "pending": 0, "failed": 4 }
+    },
+    "timings": {
+      "responseAverage": 245,
+      "responseMin": 23,
+      "responseMax": 1250,
+      "responseSd": 312,
+      "dnsAverage": 5,
+      "tlsAverage": 45,
+      "transferAverage": 12,
+      "total": 8542
+    },
+    "failures": [
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 0,
+          "test": "Status code is 200",
+          "message": "expected response to have status code 200 but got 401"
+        },
+        "at": "test-script",
+        "source": {
+          "id": "req-001",
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "me"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ]
+          }
+        },
+        "response": {
+          "code": 401,
+          "status": "Unauthorized",
+          "body": "{\"error\":\"invalid_token\",\"error_description\":\"The access token expired\"}"
+        }
+      },
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 1,
+          "test": "Status code is 200",
+          "message": "expected response to have status code 200 but got 500"
+        },
+        "at": "test-script",
+        "source": {
+          "id": "req-002",
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\":\"prod-123\",\"quantity\":2}"
+            }
+          }
+        },
+        "response": {
+          "code": 500,
+          "status": "Internal Server Error",
+          "body": "{\"error\":\"InternalError\",\"message\":\"Database connection failed\",\"correlationId\":\"corr-abc-123\"}"
+        }
+      },
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 2,
+          "test": "Response contains expected fields",
+          "message": "expected { Object (id, name, ...) } to have property 'email'"
+        },
+        "at": "test-script",
+        "source": {
+          "id": "req-003",
+          "name": "Get User Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ]
+          }
+        },
+        "response": {
+          "code": 200,
+          "status": "OK",
+          "body": "{\"id\":\"user-456\",\"name\":\"John Doe\",\"role\":\"customer\"}"
+        }
+      },
+      {
+        "error": {
+          "name": "Error",
+          "index": 3,
+          "test": "Request completed within timeout",
+          "message": "Timeout - Request took longer than 30000ms"
+        },
+        "at": "test-script",
+        "source": {
+          "id": "req-004",
+          "name": "Generate Report",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "generate"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"type\":\"monthly\",\"format\":\"pdf\"}"
+            }
+          }
+        },
+        "response": null
+      }
+    ],
+    "executions": [
+      {
+        "id": "req-001",
+        "name": "Get User Profile",
+        "response": { "code": 401, "responseTime": 125 }
+      },
+      {
+        "id": "req-002",
+        "name": "Create Order",
+        "response": { "code": 500, "responseTime": 342 }
+      },
+      {
+        "id": "req-003",
+        "name": "Get User Details",
+        "response": { "code": 200, "responseTime": 89 }
+      },
+      {
+        "id": "req-004",
+        "name": "Generate Report",
+        "response": null
+      },
+      {
+        "id": "req-005",
+        "name": "List Products",
+        "response": { "code": 200, "responseTime": 45 }
+      },
+      {
+        "id": "req-006",
+        "name": "Search Products",
+        "response": { "code": 200, "responseTime": 156 }
+      },
+      {
+        "id": "req-007",
+        "name": "Get Cart",
+        "response": { "code": 200, "responseTime": 67 }
+      },
+      {
+        "id": "req-008",
+        "name": "Add to Cart",
+        "response": { "code": 201, "responseTime": 98 }
+      },
+      {
+        "id": "req-009",
+        "name": "Health Check",
+        "response": { "code": 200, "responseTime": 12 }
+      },
+      {
+        "id": "req-010",
+        "name": "Get Metrics",
+        "response": { "code": 200, "responseTime": 23 }
+      }
+    ]
+  },
+  "environment": {
+    "name": "staging",
+    "values": [
+      { "key": "baseUrl", "value": "https://api-staging.example.com" },
+      { "key": "accessToken", "value": "***REDACTED***" }
+    ]
+  }
+}

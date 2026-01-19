@@ -22,6 +22,64 @@ Create a suite of QA automation agents that:
 
 **Phase 1 MVP**: API integration testing with Postman + Newman in Azure DevOps
 
+---
+
+## ACTIVE: Plugin Testing Phase
+
+> **Status**: qa-copilot plugin is BUILT and ready for TESTING
+>
+> **Test Plan**: See `QA-COPILOT-TEST-PLAN.md` in project root
+>
+> **Plugin Location**: Installed at `~/.claude/plugins/qa-copilot/`
+
+### What Was Built
+
+| Component | Count | Status |
+|-----------|-------|--------|
+| Commands | 6 | ✅ Validated |
+| Skills | 8 | ✅ Validated |
+| Agents | 6 | ✅ Validated |
+| Hooks | 4 | ✅ Validated |
+
+### Testing Workflow
+
+1. Review `QA-COPILOT-TEST-PLAN.md` for current test status
+2. Execute test cases (24 total: 6 commands, 8 skills, 6 agents, 4 hooks)
+3. Document results in the test plan
+4. Log defects and track resolutions
+5. Iterate until all tests pass
+
+### Test Fixtures Available
+
+- `test-fixtures/sample-traffic.csv` - Sample Dynatrace traffic data
+- `test-fixtures/newman-failure-output.json` - Sample Newman failures
+
+### Quick Start for New Sessions
+
+```bash
+# Plugin is already installed at ~/.claude/plugins/qa-copilot/
+# Just start Claude Code and the plugin will be available
+
+# Verify plugin loaded:
+# Type "/" and look for qa-copilot commands
+
+# Check test progress:
+# Open QA-COPILOT-TEST-PLAN.md
+```
+
+### Commands to Test
+
+| Command | Purpose |
+|---------|---------|
+| `/discover-endpoints` | Find API endpoints in code |
+| `/analyze-auth` | Analyze authentication patterns |
+| `/analyze-traffic` | Prioritize endpoints from traffic data |
+| `/generate-collection` | Create Postman collection |
+| `/generate-pipeline` | Create ADO pipeline |
+| `/diagnose` | Triage test failures |
+
+---
+
 ## Architecture Principles (Claude Code Mastery V3)
 
 ### CLAUDE.md Hierarchy
