@@ -1,13 +1,10 @@
 ---
-mode: agent
 description: Diagnose and triage API test failures
+agent: 'agent'
 tools:
   - read
   - search
-variables:
-  - name: results
-    description: Path to test results file or folder
-    default: ""
+argument-hint: "[results-file-or-folder]"
 ---
 
 Analyze test results to diagnose failures and provide remediation recommendations.

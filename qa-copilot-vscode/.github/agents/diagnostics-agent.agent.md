@@ -1,7 +1,6 @@
 ---
 name: diagnostics-agent
 description: Diagnoses API test failures and triages Newman results. Use when tests fail, analyzing error patterns, investigating flaky tests, understanding 401/500 errors, or getting remediation recommendations.
-mode: agent
 tools:
   - read
   - search

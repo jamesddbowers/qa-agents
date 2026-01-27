@@ -1,14 +1,11 @@
 ---
-mode: agent
 description: Generate Azure DevOps pipeline for Newman test execution
+agent: 'agent'
 tools:
   - read
   - write
   - search
-variables:
-  - name: type
-    description: Pipeline type (smoke, regression, or scheduled)
-    default: "smoke"
+argument-hint: "[type: smoke|regression|scheduled]"
 ---
 
 Generate an Azure DevOps YAML pipeline template for running Newman tests.

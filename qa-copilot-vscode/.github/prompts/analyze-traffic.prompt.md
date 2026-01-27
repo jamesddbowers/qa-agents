@@ -1,13 +1,10 @@
 ---
-mode: agent
 description: Analyze API traffic data to prioritize test coverage
+agent: 'agent'
 tools:
   - read
   - search
-variables:
-  - name: file
-    description: Traffic data file path (Dynatrace export, CSV, etc.)
-    default: ""
+argument-hint: "[traffic-data-file]"
 ---
 
 Analyze API traffic data (Dynatrace export or similar) to prioritize endpoints for smoke and regression testing.

@@ -370,6 +370,42 @@
 
 ---
 
+## VS Code GitHub Copilot Version (qa-copilot-vscode)
+
+The `qa-copilot-vscode/` folder contains a port of qa-copilot to VS Code GitHub Copilot format.
+
+### VS Code Prerequisites
+
+- VS Code 1.102+ (for full agent and skill support)
+- GitHub Copilot extension with active subscription
+- Enable these settings:
+
+```json
+{
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.promptFiles": true
+}
+```
+
+### VS Code File Formats (Corrected 2026-01-27)
+
+| Component | Format | Key Fields |
+|-----------|--------|------------|
+| Prompts | `.github/prompts/*.prompt.md` | `agent: 'agent'` (NOT `mode: agent`) |
+| Agents | `.github/agents/*.agent.md` | NO `mode` field |
+| Skills | `.github/skills/*/SKILL.md` | `name`, `description`, references |
+| Custom Instructions | `.github/copilot-instructions.md` | Project-wide guidelines |
+
+### VS Code Invocation
+
+| Component | How to Invoke |
+|-----------|---------------|
+| Prompts | `/prompt-name` in chat |
+| Agents | `@agent-name` in chat |
+| Skills | Loaded automatically based on context |
+
+---
+
 ## Test Data & Fixtures
 
 ### Required Test Fixtures

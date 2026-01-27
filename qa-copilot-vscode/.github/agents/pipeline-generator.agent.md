@@ -1,7 +1,6 @@
 ---
 name: pipeline-generator
 description: Generates Azure DevOps pipeline templates for Newman test execution. Use when creating CI/CD test automation, configuring smoke or regression pipelines, setting up scheduled test runs, or integrating API tests into deployment workflows.
-mode: agent
 tools:
   - read
   - write

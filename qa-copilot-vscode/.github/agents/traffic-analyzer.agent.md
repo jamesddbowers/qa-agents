@@ -1,7 +1,6 @@
 ---
 name: traffic-analyzer
 description: Analyzes API traffic data to prioritize test coverage. Use when working with Dynatrace exports, APM data, traffic metrics, endpoint prioritization, or identifying high-traffic patterns for smoke and regression testing.
-mode: agent
 tools:
   - read
   - search

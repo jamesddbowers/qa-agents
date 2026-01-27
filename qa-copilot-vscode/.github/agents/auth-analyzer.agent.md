@@ -1,7 +1,6 @@
 ---
 name: auth-analyzer
 description: Analyzes authentication patterns for API testing. Use when understanding auth flows, obtaining tokens for testing, configuring Postman authentication, setting up CI/CD service auth, or finding OAuth/JWT/API key patterns.
-mode: agent
 tools:
   - read
   - search

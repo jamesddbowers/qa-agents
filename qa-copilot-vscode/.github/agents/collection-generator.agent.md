@@ -1,7 +1,6 @@
 ---
 name: collection-generator
 description: Generates Postman collections for API testing. Use when creating smoke or regression test suites, building Newman-ready collections, generating API test requests, or configuring test automation.
-mode: agent
 tools:
   - read
   - write

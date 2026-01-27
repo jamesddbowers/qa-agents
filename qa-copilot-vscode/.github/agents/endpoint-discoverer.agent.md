@@ -1,7 +1,6 @@
 ---
 name: endpoint-discoverer
 description: Discovers API endpoints in codebases. Use when building endpoint inventories, analyzing API surfaces, finding routes and controllers, understanding API structure, or starting QA automation.
-mode: agent
 tools:
   - read
   - search

@@ -1,13 +1,10 @@
 ---
-mode: agent
 description: Discover and inventory API endpoints in a codebase
+agent: 'agent'
 tools:
   - read
   - search
-variables:
-  - name: path
-    description: Path to analyze (defaults to entire project)
-    default: "."
+argument-hint: "[path-to-analyze]"
 ---
 
 Analyze the codebase to discover all API endpoints and build a comprehensive inventory.

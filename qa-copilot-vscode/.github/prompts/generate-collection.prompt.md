@@ -1,14 +1,11 @@
 ---
-mode: agent
 description: Generate a Postman collection for API testing
+agent: 'agent'
 tools:
   - read
   - write
   - search
-variables:
-  - name: type
-    description: Collection type (smoke, regression, or full)
-    default: "smoke"
+argument-hint: "[type: smoke|regression|full]"
 ---
 
 Generate a Postman collection for API testing based on the endpoint inventory.

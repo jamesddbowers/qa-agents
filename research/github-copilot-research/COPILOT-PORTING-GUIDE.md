@@ -56,18 +56,20 @@ This maps perfectly to Copilot's prompt-based interaction. No automatic orchestr
 
 ### Required Software
 
-- **VS Code** 1.95+ (for latest Copilot features)
+- **VS Code** 1.102+ (for full customization features)
 - **GitHub Copilot extension** with active subscription
 - **Copilot Chat** enabled
 
-### Enable Experimental Features
+### Enable Required Features
 
 Add to VS Code settings (`settings.json`):
 
 ```json
 {
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "chat.useAgentSkills": true,
-  "chat.experimental.agentMode": true
+  "chat.useAgentsMdFile": true,
+  "chat.mcp.gallery.enabled": true
 }
 ```
 
@@ -181,15 +183,11 @@ Analyze the codebase to discover all API endpoints...
 
 ```markdown
 ---
-mode: agent
 description: Discover and inventory API endpoints in a codebase
+agent: 'agent'
 tools:
   - read
   - search
-variables:
-  - name: path
-    description: Path to analyze (defaults to entire project)
-    default: "."
 ---
 
 Analyze the codebase to discover all API endpoints and build a comprehensive inventory.
@@ -219,9 +217,12 @@ Before writing any files, ask for confirmation showing a preview.
 |-------------|---------------|-------|
 | `description:` | `description:` | Same |
 | `allowed-tools:` | `tools:` | Lowercase, different tool names |
-| `argument-hint:` | `variables:` + `${input:name}` | More structured |
-| `$ARGUMENTS` | `${input:varname}` | Named variables |
+| N/A | `agent:` | Set to `'agent'`, `'ask'`, `'edit'`, or custom agent name |
+| `argument-hint:` | `argument-hint:` | Same (optional guidance text) |
+| `$ARGUMENTS` | `${input:varname}` | Named variables in body |
 | `$1`, `$2` | `${input:var1}`, `${input:var2}` | Positional → named |
+
+> **Important**: Use `agent: 'agent'` NOT `mode: agent` - the official docs specify `agent:` field.
 
 ### Tool Name Mapping
 
@@ -278,7 +279,6 @@ You are an expert API analyst specializing in discovering and documenting API en
 ---
 name: endpoint-discoverer
 description: Discovers API endpoints in codebases. Use for building endpoint inventories, analyzing API surfaces, finding routes and controllers, or starting QA automation.
-mode: agent
 tools:
   - read
   - search
@@ -317,10 +317,15 @@ Generate inventory as markdown with:
 |-------------|---------------|-------|
 | `name:` | `name:` | Same |
 | `description:` (with examples) | `description:` (shorter) | Remove `<example>` blocks |
-| `model:` | Omit | Copilot uses its own model |
+| `model:` | `model:` (optional) | Can specify model like `Claude Sonnet 4` |
 | `color:` | Omit | No equivalent |
 | `tools:` (array) | `tools:` (list) | Lowercase names |
 | System prompt (body) | Same | Keep the prompt content |
+| N/A | `handoffs:` (optional) | Workflow transitions to other agents |
+| N/A | `infer:` (optional) | Boolean enabling subagent (default: true) |
+| N/A | `target:` (optional) | `vscode` or `github-copilot` |
+
+> **Important**: Do NOT include `mode: agent` in agent files - this field is not in official docs.
 
 ### All 6 Agents to Port
 
@@ -387,6 +392,70 @@ Discover all API endpoints in a codebase...
 | test-data-planning | `skills/test-data-planning/` | `.github/skills/test-data-planning/` |
 | ado-pipeline-patterns | `skills/ado-pipeline-patterns/` | `.github/skills/ado-pipeline-patterns/` |
 | failure-triage | `skills/failure-triage/` | `.github/skills/failure-triage/` |
+
+---
+
+## 6.5 Custom Instructions (NEW)
+
+Custom instructions are project-wide guidelines that automatically apply to all Copilot interactions. This is a VS Code-specific feature not present in Claude Code.
+
+### File Types & Locations
+
+| Type | Location | Purpose |
+|------|----------|---------|
+| Workspace (single) | `.github/copilot-instructions.md` | Global project instructions |
+| Conditional | `.github/instructions/*.instructions.md` | File-type specific rules |
+| Multi-agent | `AGENTS.md` at workspace root | Multi-agent setup |
+
+### YAML Frontmatter
+
+```yaml
+---
+name: "Display Name"
+description: "Brief description"
+applyTo: "**/*.ts,**/*.tsx"
+---
+```
+
+### qa-copilot Custom Instructions
+
+For qa-copilot, create `.github/copilot-instructions.md`:
+
+```markdown
+---
+applyTo: "**"
+---
+# QA Copilot Project Instructions
+
+## Safety Guardrails
+
+NEVER modify:
+- Application source code (src/, app/, lib/)
+- Configuration files (.env, secrets, credentials)
+- Package files (package.json, pom.xml, *.csproj)
+
+ONLY write to:
+- qa-agent-output/ (reports, inventories)
+- docs/generated/ (OpenAPI drafts)
+- postman/ (collections, environments)
+- ado/ (pipeline templates)
+
+Always ask for confirmation before writing files.
+
+## Output Standards
+
+- Include source file references with line numbers
+- Mark confidence levels (High/Medium/Low)
+- Group findings logically by resource/domain
+```
+
+### Required Setting
+
+```json
+{
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true
+}
+```
 
 ---
 

@@ -1,13 +1,10 @@
 ---
-mode: agent
 description: Analyze authentication patterns for API testing
+agent: 'agent'
 tools:
   - read
   - search
-variables:
-  - name: path
-    description: Path to analyze (defaults to entire project)
-    default: "."
+argument-hint: "[path-to-analyze]"
 ---
 
 Analyze the authentication implementation to understand how to authenticate for API testing without browser-based flows.
