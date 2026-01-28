@@ -15,12 +15,28 @@ This is the GitHub Copilot VS Code version of qa-copilot. It provides the same Q
 
 ## Quick Start (Testing)
 
-**One-liner to pull QA Copilot into any project:**
+> ⚠️ **CRITICAL**: The `.github/` folder **MUST** be at your **project root** (workspace root).
+> Do NOT nest it inside subdirectories like `qa/.github/` or VS Code won't find it.
+
+**Option A - Smart install script (Recommended):**
 
 ```bash
 # Replace YOUR_USERNAME with your GitHub username
-cd /path/to/your/project && npx degit github:YOUR_USERNAME/qa-copilot-vscode/.github .github
+cd /path/to/your/project  # ← Must be at project root!
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/qa-copilot-vscode/main/install.sh | bash
 ```
+
+✅ **Safe for existing `.github/` folders** - only updates QA Copilot files, preserves your other agents/prompts
+
+**Option B - Direct degit command:**
+
+```bash
+# Replace YOUR_USERNAME with your GitHub username
+cd /path/to/your/project  # ← Must be at project root!
+npx degit github:YOUR_USERNAME/qa-copilot-vscode/.github .github
+```
+
+⚠️ **Warning**: This overwrites existing `.github/` content. Use Option A if you have other agents/prompts.
 
 > **Note:** If using the parent qa-agents repo instead, use:
 > `npx degit github:YOUR_USERNAME/qa-agents/qa-copilot-vscode/.github .github`
@@ -64,23 +80,61 @@ Open VS Code Settings (JSON) and add these settings:
 
 **How to access Settings JSON:**
 
-1. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+> 📖 [Official VS Code Settings Documentation](https://code.visualstudio.com/docs/getstarted/settings)
+
+**Option 1: Command Palette (Recommended)**
+1. Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
 2. Type "Preferences: Open User Settings (JSON)"
-3. Add the settings above
+3. Press Enter
+4. Add the settings above inside the `{}` braces
+
+**Option 2: File Menu**
+1. File → Preferences → Settings (Windows/Linux) or Code → Settings → Settings (Mac)
+2. Click the "Open Settings (JSON)" icon in the top-right corner (looks like `{}`)
+
+**Option 3: Direct File Path**
+- **Windows**: `%APPDATA%\Code\User\settings.json`
+- **Mac**: `~/Library/Application Support/Code/User/settings.json`
+- **Linux**: `~/.config/Code/User/settings.json`
 
 ### Step 3: Pull Files from GitHub to Your Project
 
+> 🚨 **CRITICAL REQUIREMENT**: The `.github/` folder **MUST** be at your **project root** (workspace root).
+>
+> **Correct**: `your-project/.github/prompts/...`
+> **Wrong**: `your-project/qa/.github/prompts/...` ❌
+>
+> VS Code will **NOT** find nested `.github/` folders. The folder must be at the same level as your other project files.
+
 Choose the method that works best for your setup:
 
-#### Method 1: npx degit (Recommended - No Clone Required)
+#### Method 1: Smart Install Script (Recommended - Safe Merge)
 
 ```bash
-# From your target project directory
+# From your target project directory (MUST be at root!)
+cd /path/to/your/project
+
+# Download and run the smart installer
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/qa-copilot-vscode/main/install.sh | bash
+```
+
+**Why the install script?**
+- ✅ Safely merges with existing `.github/` content
+- ✅ Only updates QA Copilot files, preserves other agents/prompts
+- ✅ Warns if you're not at project root
+- ✅ Shows detailed summary of what was installed/updated
+
+#### Method 2: npx degit (Quick but Overwrites)
+
+```bash
+# From your target project directory (MUST be at root!)
 cd /path/to/your/project
 
 # Pull just the .github folder from the standalone repo
 npx degit github:YOUR_USERNAME/qa-copilot-vscode/.github .github
 ```
+
+⚠️ **Warning**: This **overwrites** existing `.github/` content. Use Method 1 if you have other agents/prompts.
 
 **Why degit?** Downloads only the files you need without git history or full clone.
 
@@ -196,18 +250,42 @@ Open the target project folder in VS Code. **No restart required** - VS Code aut
 
 ## Troubleshooting
 
+### 🚨 Most Common Issue: Wrong Folder Location
+
+**If NOTHING works (no prompts, no agents, no skills):**
+
+| Issue | Solution |
+|-------|----------|
+| `.github/` nested in subdirectory | **Move it to project root**. VS Code ONLY looks at workspace root. |
+| Not sure where root is? | It's the folder you opened in VS Code (where your `package.json`, `.git/`, or main files are) |
+| Nested like `qa/.github/`? | Run: `mv qa/.github .github` to move it to root |
+
+**How to verify you're at the root:**
+
+```bash
+# You should see .github/ at the same level as your main project files
+ls -la
+# Should show: .github/, src/, package.json, etc.
+
+# Check .github structure
+ls -la .github/
+# Should show: prompts/, agents/, skills/, copilot-instructions.md
+```
+
+---
+
 ### Prompts Not Appearing
 
 | Symptom | Solution |
 |---------|----------|
-| `/` shows no custom prompts | Enable `chat.promptFiles: true` in settings |
+| `/` shows no custom prompts | 1. Verify `.github/` is at root (see above)<br>2. Enable `chat.promptFiles: true` in settings |
 | Prompts listed but won't run | Check `.prompt.md` files have valid YAML frontmatter |
 
 ### Agents Not Appearing
 
 | Symptom | Solution |
 |---------|----------|
-| No custom agents in dropdown | Enable `chat.agent.enabled: true` in settings |
+| No custom agents in dropdown | 1. Verify `.github/` is at root (see above)<br>2. Enable `chat.agent.enabled: true` in settings |
 | Agent picker missing entirely | Update VS Code to 1.102+ |
 | Org agents not showing | Enable `github.copilot.chat.customAgents.showOrganizationAndEnterpriseAgents: true` |
 
@@ -215,16 +293,16 @@ Open the target project folder in VS Code. **No restart required** - VS Code aut
 
 | Symptom | Solution |
 |---------|----------|
-| Skills never activate | Enable `chat.useAgentSkills: true` in settings |
+| Skills never activate | 1. Verify `.github/` is at root (see above)<br>2. Enable `chat.useAgentSkills: true` in settings |
 | Wrong skill loads | Check `description` field in SKILL.md frontmatter |
 
 ### General Issues
 
 | Symptom | Solution |
 |---------|----------|
-| Nothing works | Verify `.github/` folder is at project root (not nested) |
-| Files not detected | Close and reopen the project folder |
+| Files not detected after install | Close and reopen the project folder (or restart VS Code) |
 | Legacy `.chatmode.md` files | Use VS Code Quick Fix to convert to `.agent.md` |
+| Install script warns about subdirectory | You're not at project root - `cd` to the folder you open in VS Code |
 
 ---
 
