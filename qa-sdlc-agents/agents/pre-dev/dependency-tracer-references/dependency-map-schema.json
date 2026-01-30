@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "dependency-map",
+  "description": "Output of the dependency-tracer agent. Maps inter-service calls, external APIs, messaging, infrastructure, and async flows.",
+  "type": "object",
+  "required": ["repoName", "generatedDate", "sourceProfile", "confidence", "services", "downstream", "upstream", "externalApis", "messaging", "databases", "caching", "asyncFlows", "dependencyDiagram", "testImplications"],
+  "properties": {
+    "repoName": { "type": "string" },
+    "generatedDate": { "type": "string", "format": "date-time" },
+    "sourceProfile": { "type": "string" },
+    "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+
+    "services": {
+      "type": "object",
+      "properties": {
+        "current": {
+          "type": "object",
+          "required": ["name", "type"],
+          "properties": {
+            "name": { "type": "string" },
+            "type": { "type": "string" },
+            "port": { "type": ["string", "null"] },
+            "source": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "downstream": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "source", "confidence"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "baseUrl": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+          "calls": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "method": { "type": "string" },
+                "path": { "type": "string" },
+                "calledFrom": { "type": "string" },
+                "purpose": { "type": "string" }
+              }
+            }
+          },
+          "clientLibrary": { "type": "string" },
+          "circuitBreaker": { "type": "boolean" },
+          "retryConfigured": { "type": "boolean" }
+        }
+      }
+    },
+
+    "upstream": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "confidence"],
+        "properties": {
+          "name": { "type": "string" },
+          "evidence": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+          "source": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "externalApis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "source", "confidence"],
+        "properties": {
+          "name": { "type": "string" },
+          "baseUrl": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+          "calls": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "method": { "type": "string" },
+                "path": { "type": "string" },
+                "calledFrom": { "type": "string" },
+                "purpose": { "type": "string" }
+              }
+            }
+          },
+          "authMethod": { "type": "string" },
+          "sdkUsed": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "messaging": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["system", "source", "confidence"],
+        "properties": {
+          "system": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+          "produces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "queue": { "type": "string" },
+                "exchange": { "type": ["string", "null"] },
+                "routingKey": { "type": ["string", "null"] },
+                "messageType": { "type": "string" },
+                "publishedFrom": { "type": "string" },
+                "source": { "type": "string" }
+              }
+            }
+          },
+          "consumes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "queue": { "type": "string" },
+                "exchange": { "type": ["string", "null"] },
+                "routingKey": { "type": ["string", "null"] },
+                "messageType": { "type": "string" },
+                "handlerMethod": { "type": "string" },
+                "source": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "databases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "confidence"],
+        "properties": {
+          "type": { "type": "string" },
+          "connectionRef": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+        }
+      }
+    },
+
+    "caching": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["system", "confidence"],
+        "properties": {
+          "system": { "type": "string" },
+          "source": { "type": "string" },
+          "usage": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+        }
+      }
+    },
+
+    "asyncFlows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "steps"],
+        "properties": {
+          "name": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+        }
+      }
+    },
+
+    "dependencyDiagram": { "type": "string", "description": "Mermaid graph block" },
+
+    "testImplications": {
+      "type": "object",
+      "properties": {
+        "mockCandidates": { "type": "array", "items": { "type": "string" } },
+        "integrationTestDeps": { "type": "array", "items": { "type": "string" } },
+        "asyncTestChallenges": { "type": "array", "items": { "type": "string" } },
+        "sitCoordination": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

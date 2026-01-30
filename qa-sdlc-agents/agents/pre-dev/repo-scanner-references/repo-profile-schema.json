@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "repo-profile",
+  "description": "Output of the repo-scanner agent. Foundation for all downstream pre-dev agents.",
+  "type": "object",
+  "required": ["repoName", "scanDate", "confidence", "languages", "frameworks", "buildSystem", "projectStructure", "dependencies", "testFrameworks", "cicd", "qaSignals", "recommendations"],
+  "properties": {
+    "repoName": { "type": "string", "description": "Repository or project name" },
+    "scanDate": { "type": "string", "format": "date-time", "description": "ISO 8601 timestamp of scan" },
+    "confidence": { "type": "string", "enum": ["High", "Medium", "Low"], "description": "Overall scan confidence" },
+
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["language", "confidence"],
+        "properties": {
+          "language": { "type": "string" },
+          "version": { "type": ["string", "null"] },
+          "source": { "type": "string", "description": "File where detected" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+        }
+      }
+    },
+
+    "frameworks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "confidence"],
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": ["string", "null"] },
+          "source": { "type": "string", "description": "File:line where detected" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+        }
+      }
+    },
+
+    "buildSystem": {
+      "type": "object",
+      "required": ["tool", "configFile", "confidence"],
+      "properties": {
+        "tool": { "type": "string" },
+        "configFile": { "type": "string" },
+        "modules": { "type": "array", "items": { "type": "string" } },
+        "buildCommand": { "type": "string" },
+        "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+      }
+    },
+
+    "projectStructure": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "enum": ["single-module", "multi-module", "mono-repo"] },
+        "modules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "path": { "type": "string" },
+              "purpose": { "type": "string" }
+            }
+          }
+        },
+        "sourceRoots": { "type": "array", "items": { "type": "string" } },
+        "testRoots": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "version": { "type": ["string", "null"] },
+              "scope": { "type": "string" }
+            }
+          }
+        },
+        "notable": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "implication": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "testFrameworks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "source": { "type": "string" },
+          "testDir": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+        }
+      }
+    },
+
+    "cicd": {
+      "type": "object",
+      "properties": {
+        "platform": { "type": "string" },
+        "configFiles": { "type": "array", "items": { "type": "string" } },
+        "hasTestStage": { "type": "boolean" },
+        "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] }
+      }
+    },
+
+    "qaSignals": {
+      "type": "object",
+      "properties": {
+        "existingTests": { "type": "boolean" },
+        "testCount": { "type": "integer", "description": "Approximate test file count" },
+        "hasOpenApiSpec": { "type": "boolean" },
+        "hasReadme": { "type": "boolean" },
+        "hasContributing": { "type": "boolean" },
+        "securityDependencies": { "type": "array", "items": { "type": "string" } },
+        "databaseDependencies": { "type": "array", "items": { "type": "string" } },
+        "messagingDependencies": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "recommendations": {
+      "type": "object",
+      "properties": {
+        "nextAgents": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

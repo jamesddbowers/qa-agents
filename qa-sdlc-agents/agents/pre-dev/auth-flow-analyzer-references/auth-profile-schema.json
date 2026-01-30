@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "auth-profile",
+  "description": "Output of the auth-flow-analyzer agent. Documents auth mechanisms and test auth strategy.",
+  "type": "object",
+  "required": ["repoName", "generatedDate", "sourceInventory", "confidence", "mechanisms", "tokenFlow", "rolesAndScopes", "testAuthStrategy", "endpointAuthMap", "securityFindings"],
+  "properties": {
+    "repoName": { "type": "string" },
+    "generatedDate": { "type": "string", "format": "date-time" },
+    "sourceInventory": { "type": "string" },
+    "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+
+    "mechanisms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "isPrimary", "source", "confidence"],
+        "properties": {
+          "type": { "type": "string" },
+          "provider": { "type": ["string", "null"] },
+          "isPrimary": { "type": "boolean" },
+          "source": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+          "configuration": {
+            "type": "object",
+            "properties": {
+              "configFiles": { "type": "array", "items": { "type": "string" } },
+              "environmentVariables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "purpose": { "type": "string" },
+                    "source": { "type": "string" }
+                  }
+                }
+              },
+              "tokenEndpoint": { "type": ["string", "null"] },
+              "scopes": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+
+    "tokenFlow": {
+      "type": "object",
+      "properties": {
+        "acquisitionMethod": { "type": "string" },
+        "steps": { "type": "array", "items": { "type": "string" } },
+        "tokenFormat": { "type": "string" },
+        "tokenLocation": { "type": "string" },
+        "tokenLifetime": { "type": ["string", "null"] },
+        "refreshStrategy": { "type": "string" }
+      }
+    },
+
+    "rolesAndScopes": {
+      "type": "object",
+      "properties": {
+        "rolesDetected": { "type": "array", "items": { "type": "string" } },
+        "scopesDetected": { "type": "array", "items": { "type": "string" } },
+        "roleSource": { "type": ["string", "null"] },
+        "roleAssignment": { "type": ["string", "null"] }
+      }
+    },
+
+    "testAuthStrategy": {
+      "type": "object",
+      "required": ["recommended", "nonInteractive"],
+      "properties": {
+        "recommended": { "type": "string" },
+        "nonInteractive": { "type": "boolean" },
+        "steps": { "type": "array", "items": { "type": "string" } },
+        "postmanPattern": {
+          "type": "object",
+          "properties": {
+            "preRequestScript": { "type": "string" },
+            "environmentVariables": { "type": "array", "items": { "type": "string" } },
+            "tokenStorage": { "type": "string" }
+          }
+        },
+        "cicdPattern": {
+          "type": "object",
+          "properties": {
+            "secretStorage": { "type": "string" },
+            "tokenAcquisition": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "endpointAuthMap": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "publicEndpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "method": { "type": "string" },
+              "path": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        },
+        "roleProtectedEndpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "method": { "type": "string" },
+              "path": { "type": "string" },
+              "requiredRole": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "securityFindings": {
+      "type": "object",
+      "properties": {
+        "concerns": { "type": "array", "items": { "type": "string" } },
+        "recommendations": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

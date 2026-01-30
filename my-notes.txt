@@ -1,0 +1,19 @@
+- Need to further elaborate each of the sub-feedback iteration loops within each one of the sub-phases, as well as phases, and then across phases across the whole thing. 
+- Need to have a breakout for each one of the testing types and expectations. This needs to link directly to documentation to note what this type of testing is, each one of them, and how to go about doing that based off of the technology that's available. 
+- Need to document how to create test plans in Azure DevOps. 
+- For each one of the deliverable reports, need to create a template based on industry best standards and obviously use case. 
+- Just as done for support phase post-release, there's a lot of explanation there. I need to do that for every single thing in here to help make sure that there is a clear, full understanding of how each piece of this phase should work. Then, be able to create blog postings, documentation, and how-tos on how should an organization do it in my opinionated way to make sure that these principles are driven home so people can understand why these things should be done when they should be done and the outcomes expected. 
+- Need to create sequence diagrams: High-level for this, for each phase and each sub-phase; Even down to each one of the actual QA actions that needs to take place
+- Just as the sequence diagrams highlight the need to actually do flow diagrams for all of them as well. 
+- I also need to use this whole QA workflow and patterns to highlight how insignificant the work that Ahmad has done for the playwright framework piece is, to where he's making it seem like it's a savior and it's the best thing ever, but really being able to highlight how that is just one small step within the bigger picture of an entire best-in-class playwright end-to-end UI automation framework. Which is just one small step in the entire QA automation set of frameworks from:
+    - Unit testing
+    - Component testing
+    - Contract testing at developer level
+    - System integration testing
+    - Full end-to-end testing
+    - Full performance testing
+    - Full accessibility testing
+    - Full security testing
+    - Full compliance testing
+    - Full mobile testing
+In an enterprise organization.

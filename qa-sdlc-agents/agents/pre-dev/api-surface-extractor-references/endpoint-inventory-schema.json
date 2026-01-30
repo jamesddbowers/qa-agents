@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "endpoint-inventory",
+  "description": "Output of the api-surface-extractor agent. Lists all API endpoints with parameters, auth, and metadata.",
+  "type": "object",
+  "required": ["repoName", "generatedDate", "sourceProfile", "framework", "totalEndpoints", "confidence", "endpoints", "resourceSummary", "authSummary", "additionalFindings"],
+  "properties": {
+    "repoName": { "type": "string" },
+    "generatedDate": { "type": "string", "format": "date-time" },
+    "sourceProfile": { "type": "string", "description": "Path to repo-profile.json consumed" },
+    "framework": { "type": "string" },
+    "totalEndpoints": { "type": "integer" },
+    "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["method", "path", "source", "confidence"],
+        "properties": {
+          "method": { "type": "string", "enum": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"] },
+          "path": { "type": "string" },
+          "fullPath": { "type": "string" },
+          "controller": { "type": "string" },
+          "handlerMethod": { "type": "string" },
+          "source": { "type": "string", "description": "file:line" },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "type": { "type": "string" },
+                    "required": { "type": "boolean" }
+                  }
+                }
+              },
+              "query": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "type": { "type": "string" },
+                    "required": { "type": "boolean" },
+                    "default": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "header": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "type": { "type": "string" },
+                    "required": { "type": "boolean" }
+                  }
+                }
+              },
+              "body": {
+                "type": ["object", "null"],
+                "properties": {
+                  "type": { "type": ["string", "null"] },
+                  "contentType": { "type": "string" },
+                  "source": { "type": ["string", "null"] }
+                }
+              }
+            }
+          },
+
+          "response": {
+            "type": "object",
+            "properties": {
+              "type": { "type": ["string", "null"] },
+              "status": { "type": "integer" },
+              "contentType": { "type": "string" }
+            }
+          },
+
+          "auth": {
+            "type": "object",
+            "properties": {
+              "required": { "type": "boolean" },
+              "mechanism": { "type": "string" },
+              "roles": { "type": "array", "items": { "type": "string" } },
+              "source": { "type": ["string", "null"] }
+            }
+          },
+
+          "middleware": { "type": "array", "items": { "type": "string" } },
+
+          "tags": {
+            "type": "object",
+            "properties": {
+              "resource": { "type": "string" },
+              "module": { "type": "string" },
+              "deprecated": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+
+    "resourceSummary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "resource": { "type": "string" },
+          "basePath": { "type": "string" },
+          "endpointCount": { "type": "integer" },
+          "methods": { "type": "array", "items": { "type": "string" } },
+          "authRequired": { "type": "boolean" }
+        }
+      }
+    },
+
+    "authSummary": {
+      "type": "object",
+      "properties": {
+        "protectedEndpoints": { "type": "integer" },
+        "publicEndpoints": { "type": "integer" },
+        "authMechanisms": { "type": "array", "items": { "type": "string" } },
+        "rolesDetected": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "additionalFindings": {
+      "type": "object",
+      "properties": {
+        "openApiSpec": { "type": ["string", "null"] },
+        "undocumentedEndpoints": { "type": "array", "items": { "type": "string" } },
+        "deprecatedEndpoints": { "type": "array", "items": { "type": "string" } },
+        "healthCheckEndpoints": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

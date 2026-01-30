@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "test-plan-scaffold",
+  "description": "Output of the test-plan-scaffolder agent. Feature-based test plan with test case shells for ADO Test Plans.",
+  "type": "object",
+  "required": ["repoName", "generatedDate", "sourceFiles", "planName", "organization", "suites", "statistics", "adoImportNotes"],
+  "properties": {
+    "repoName": { "type": "string" },
+    "generatedDate": { "type": "string", "format": "date-time" },
+    "sourceFiles": { "type": "array", "items": { "type": "string" } },
+    "planName": { "type": "string" },
+    "organization": { "type": "string", "const": "feature-based" },
+
+    "suites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "description", "testCases"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string", "enum": ["feature", "cross-cutting"] },
+          "description": { "type": "string" },
+          "relatedResources": { "type": "array", "items": { "type": "string" } },
+          "relatedEndpoints": {
+            "type": ["array", "string"],
+            "items": { "type": "string" }
+          },
+          "testCases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "title", "type", "priority", "automationStatus", "tags"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^TC-[A-Z]+-[0-9]+$" },
+                "title": { "type": "string" },
+                "type": { "type": "string", "enum": ["Functional", "Negative", "Security", "Performance"] },
+                "priority": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+                "automationStatus": { "type": "string", "enum": ["Planned", "Manual"] },
+                "endpoint": { "type": "string" },
+                "gapReference": { "type": ["string", "null"] },
+                "tags": { "type": "array", "items": { "type": "string" } },
+                "preconditions": { "type": "string" },
+                "steps": { "type": "string" },
+                "expectedResult": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "statistics": {
+      "type": "object",
+      "required": ["totalSuites", "totalTestCases", "byPriority", "byType", "byAutomation", "byTag"],
+      "properties": {
+        "totalSuites": { "type": "integer" },
+        "totalTestCases": { "type": "integer" },
+        "byPriority": {
+          "type": "object",
+          "properties": {
+            "Critical": { "type": "integer" },
+            "High": { "type": "integer" },
+            "Medium": { "type": "integer" },
+            "Low": { "type": "integer" }
+          }
+        },
+        "byType": {
+          "type": "object",
+          "properties": {
+            "Functional": { "type": "integer" },
+            "Negative": { "type": "integer" },
+            "Security": { "type": "integer" },
+            "Performance": { "type": "integer" }
+          }
+        },
+        "byAutomation": {
+          "type": "object",
+          "properties": {
+            "Planned": { "type": "integer" },
+            "Manual": { "type": "integer" }
+          }
+        },
+        "byTag": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        }
+      }
+    },
+
+    "adoImportNotes": {
+      "type": "object",
+      "properties": {
+        "format": { "type": "string" },
+        "importMethod": { "type": "string" },
+        "columns": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

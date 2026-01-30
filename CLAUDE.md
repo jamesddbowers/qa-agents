@@ -2,37 +2,56 @@
 
 ## Project Overview
 
-This project builds **qa-copilot**, a Claude Code plugin providing QA automation agents for API integration testing. The agents operate as VS Code co-pilot assistants with human-in-the-loop guardrails.
+This project builds a **full SDLC QA automation agent suite** — a comprehensive set of AI agents that support QA processes across the entire software development lifecycle. The agents are designed for a scenario where a solo QA contractor comes into an organization with no existing QA processes, minimal documentation, and needs to build everything from scratch.
 
 ## Mission
 
-Create a suite of QA automation agents that:
+Create agents that:
 
-1. Analyze codebases to discover API endpoints, auth patterns, and data dependencies
-2. Generate Postman collections for smoke and regression testing
-3. Create Azure DevOps pipeline templates for Newman execution
-4. Provide diagnostics and failure triage capabilities
-5. Never act autonomously — always ask permission before running commands or writing files
-
-## Plugin Name
-
-`qa-copilot`
+1. Analyze codebases repo-by-repo to extract architecture, APIs, data flows, dependencies, and documentation
+2. Generate all QA deliverables across the SDLC: test plans, test cases (BDD), automation, reports, release notes, playbooks
+3. Support testing at every level: unit (TDD), component, contract, API integration, SIT, E2E, performance, accessibility
+4. Produce documentation that doesn't exist: architecture diagrams, sequence diagrams, flow diagrams, API catalogs
+5. Build on each other phase-by-phase: pre-dev outputs feed dev agents, dev feeds SIT, SIT feeds release, release feeds support
+6. Never act autonomously — always ask permission before running commands or writing files
 
 ## Current Phase
 
-**Phase 1 MVP**: API integration testing with Postman + Newman in Azure DevOps
+**Phase 0 (MVP)**: Building agents with full instructions, templates, and file-based references. Focus on correctness and completeness.
+
+**Phase 1 (Future)**: Efficiency iteration — Python scripts for reproducible outputs, optimize slow/inconsistent parts.
 
 ---
 
-## ACTIVE: Plugin Testing Phase
+## Session Quick Start
 
-> **Status**: qa-copilot plugin is BUILT and ready for TESTING
->
-> **Test Plan**: See `QA-COPILOT-TEST-PLAN.md` in project root
->
-> **Plugin Location**: Installed at `~/.claude/plugins/qa-copilot/`
+**Every new session must read these files first:**
 
-### What Was Built
+1. **This file** (`CLAUDE.md`) — project context
+2. **`work-tracking/STATUS.md`** — what's done, what's in progress, what's next
+
+Then load context based on the current task:
+
+| Task Type | Additional Files to Read |
+|-----------|--------------------------|
+| Understanding the project | `docs/qa-workflow/00-overview.md` + `docs/agent-architecture.md` |
+| Writing QA workflow docs | `docs/qa-workflow/00-overview.md` + the specific phase file |
+| Building agents | `docs/agent-architecture.md` + the specific epic file (see its Relationships section for all linked docs) + relevant qa-workflow phase file |
+| Reviewing decisions/rationale | `work-tracking/decisions/ADR-001-project-foundations.md` |
+| Working on infrastructure | `work-tracking/epics/01-infrastructure.md` |
+| Research | `research/gap-tracker.md` + `research/source-priority-index.md` |
+
+**Key principle**: Every epic file has a **Relationships** section that lists the exact upstream/downstream epics, qa-workflow docs, and agent-architecture sections relevant to that work. Start with the epic file — it will tell you what else to read.
+
+**Use `/clear` liberally** — [39% performance drop](https://arxiv.org/pdf/2505.06120) when mixing topics. One task, one chat.
+
+---
+
+## qa-copilot (Phase 1 MVP — Complete)
+
+> The original qa-copilot plugin (API integration testing with Postman + Newman) is **built and validated**.
+> Its 6 agents will be absorbed into the new `qa-sdlc-agents` suite.
+> See `qa-copilot/` for the existing plugin and `QA-COPILOT-TEST-PLAN.md` for test status.
 
 | Component | Count | Status |
 |-----------|-------|--------|
@@ -40,43 +59,6 @@ Create a suite of QA automation agents that:
 | Skills | 8 | ✅ Validated |
 | Agents | 6 | ✅ Validated |
 | Hooks | 4 | ✅ Validated |
-
-### Testing Workflow
-
-1. Review `QA-COPILOT-TEST-PLAN.md` for current test status
-2. Execute test cases (24 total: 6 commands, 8 skills, 6 agents, 4 hooks)
-3. Document results in the test plan
-4. Log defects and track resolutions
-5. Iterate until all tests pass
-
-### Test Fixtures Available
-
-- `test-fixtures/sample-traffic.csv` - Sample Dynatrace traffic data
-- `test-fixtures/newman-failure-output.json` - Sample Newman failures
-
-### Quick Start for New Sessions
-
-```bash
-# Plugin is already installed at ~/.claude/plugins/qa-copilot/
-# Just start Claude Code and the plugin will be available
-
-# Verify plugin loaded:
-# Type "/" and look for qa-copilot commands
-
-# Check test progress:
-# Open QA-COPILOT-TEST-PLAN.md
-```
-
-### Commands to Test
-
-| Command | Purpose |
-|---------|---------|
-| `/discover-endpoints` | Find API endpoints in code |
-| `/analyze-auth` | Analyze authentication patterns |
-| `/analyze-traffic` | Prioritize endpoints from traffic data |
-| `/generate-collection` | Create Postman collection |
-| `/generate-pipeline` | Create ADO pipeline |
-| `/diagnose` | Triage test failures |
 
 ---
 
@@ -136,7 +118,19 @@ When building qa-copilot components, reference these CRITICAL sources:
 - **Backend**: Java (Spring Boot, JAX-RS), potentially .NET (ASP.NET Core)
 - **Frontend**: HTML, JavaScript, CSS, TypeScript
 - **CI/CD**: Azure DevOps YAML pipelines
-- **Testing**: Postman/Newman (Phase 1), Playwright (Phase 2+), k6 (Phase 5)
+- **Testing Tools**:
+  - Postman/Newman CLI — API smoke testing, discovery, initial integration testing
+  - Playwright — UI E2E testing + API testing (long-term API migration from Postman, monorepo)
+  - k6 — Performance testing (separate repo)
+  - axe-core (via Playwright) — Accessibility testing
+  - Azure DevOps Test Plans — Test case management
+- **Test Management**: Azure DevOps Test Plans (feature-based organization, not story-based)
+
+## Testing Methodology
+
+- **BDD (Behavior-Driven Development)** — All QA-created test cases use Given/When/Then format. Covers: feature-level, integration, SIT, E2E, performance scenarios, accessibility. BDD scenarios are the source that feeds all downstream testing.
+- **TDD (Test-Driven Development)** — Developer-owned tests (unit, component, contract). TDD tests are informed by BDD scenarios — the feature specs tell developers what behaviors need unit/component coverage.
+- **BDD → TDD flow**: QA defines expected behaviors top-down (BDD), developers build to those specs bottom-up (TDD). The two reinforce each other.
 
 ## Operating Guardrails
 
@@ -184,36 +178,74 @@ These rules are **ABSOLUTE** — no exceptions:
 ## Directory Structure
 
 ```text
-qa-agents/                          # This repo
-├── CLAUDE.md                       # This file
-├── qa_automation_agent_plan.md     # Original strategic plan
-├── qa-copilot/                     # The plugin
-│   ├── .claude-plugin/
-│   │   └── plugin.json
-│   ├── commands/
+qa-agents/                              # This repo
+├── CLAUDE.md                           # This file
+├── qa_automation_agent_plan.md         # Original strategic plan
+├── QA Workflow.png                     # Visual QA workflow diagram
+├── my-notes.txt                        # Ongoing enhancement notes
+│
+├── docs/                               # Reference documentation
+│   ├── qa-workflow/                    # QA SDLC workflow (10 files, one per phase/concept)
+│   │   ├── 00-overview.md             # Mission, phases, test pyramid, tooling
+│   │   ├── 01-intake.md              # Intake phase (stub)
+│   │   ├── 02-pre-development.md     # Pre-Dev deliverables & QA actions
+│   │   ├── 03-development.md         # Dev deliverables, BDD test cases, WIP testing
+│   │   ├── 04-sit-e2e-perf-a11y.md   # SIT/E2E/Perf/A11y cross-service testing
+│   │   ├── 05-final-release-prep.md  # Release readiness, notes, sign-off
+│   │   ├── 06-post-release.md        # Rollback strategy, production monitoring
+│   │   ├── 07-continuous-feedback.md  # Metrics, retros, feedback loops
+│   │   ├── 08-role-interaction-grid.md
+│   │   ├── 09-playbook-concept.md
+│   │   └── 10-deliverables-index.md
+│   ├── agent-architecture.md           # Full agent design (29 agents, chaining, outputs)
+│   ├── templates/                      # Report/deliverable templates
+│   └── diagrams/                       # Sequence/flow diagrams (Mermaid)
+│
+├── work-tracking/                      # Project status and task management
+│   ├── STATUS.md                       # READ THIS FIRST every session
+│   ├── epics/                          # Epic files with task checklists
+│   │   ├── 01-infrastructure.md
+│   │   ├── 02-qa-workflow-doc.md
+│   │   ├── 03-pre-dev-agents.md
+│   │   ├── 04-dev-agents.md
+│   │   ├── 05-sit-agents.md
+│   │   ├── 06-release-agents.md
+│   │   └── 07-support-agents.md
+│   └── decisions/                      # Architecture decision records
+│
+├── qa-copilot/                         # Phase 1 MVP plugin (complete, to be absorbed)
+│   ├── .claude-plugin/plugin.json
+│   ├── commands/                       # 6 commands
+│   ├── agents/                         # 6 agents
+│   ├── skills/                         # 8 skills with references/
+│   └── hooks/                          # 4 hooks
+│
+├── qa-sdlc-agents/                     # Full SDLC agent suite (NEW)
 │   ├── agents/
-│   ├── skills/
-│   ├── hooks/
-│   └── README.md
-├── research/                       # Research framework
-│   ├── research-template.md        # Full source documentation template (Stage 3)
-│   ├── readme-evaluation-template.md  # Lightweight README analysis template (Stage 1)
-│   ├── extraction-criteria.md      # Extraction guidelines by source type
-│   ├── gap-tracker.md             # Coverage gaps and research priorities
-│   ├── source-priority-index.md   # README analysis and priority rankings (Stage 2)
+│   │   ├── pre-dev/                   # 8 agents: repo analysis & doc generation
+│   │   ├── dev/                       # 5 agents: test creation & code quality
+│   │   ├── sit/                       # 8 agents: cross-service testing
+│   │   ├── release/                   # 3 agents: release preparation
+│   │   └── support/                   # 5 agents: post-release & continuous improvement
+│   ├── commands/
+│   ├── skills/                         # Tool-specific knowledge bases
+│   │   ├── playwright/references/
+│   │   ├── k6/references/
+│   │   ├── postman-newman/references/
+│   │   └── testing-practices/references/
+│   └── hooks/
+│
+├── research/                           # Research framework (unchanged)
+│   ├── research-template.md
+│   ├── readme-evaluation-template.md
+│   ├── extraction-criteria.md
+│   ├── gap-tracker.md
+│   ├── source-priority-index.md
 │   └── sources/
-│       ├── possible-sources-to-utilize/  # Stage 1: README staging area
-│       │   ├── [source-name-1]/
-│       │   │   ├── README.md      # Original README from source
-│       │   │   └── evaluation.md  # Analysis using readme-evaluation-template.md
-│       │   ├── [source-name-2]/
-│       │   │   ├── README.md
-│       │   │   └── evaluation.md
-│       │   └── ...
-│       ├── complete-guide-to-claude-code-v3.md  # Stage 3: Fully extracted sources
-│       └── claude-code-mastery-v3-extraction.md
-└── backlog/                        # Future phase patterns
-    └── future-phases.md
+│
+├── test-fixtures/                      # Test data files
+├── qa-agent-output/                    # Runtime output location
+└── backlog/                            # Future phase patterns
 ```
 
 ## Workflow
@@ -364,25 +396,14 @@ After research is complete:
 - [Compound Engineering](https://every.to/chain-of-thought/compound-engineering-how-every-codes-with-agents)
 - [Claude Code Hooks Guardrails](https://paddo.dev/blog/claude-code-hooks-guardrails/)
 
-## Session Quick Start
-
-When starting a new session:
-
-1. Review this file for project context
-2. Check research status:
-   - `research/source-priority-index.md` - Sources being evaluated and their priorities
-   - `research/gap-tracker.md` - Current coverage gaps and what's needed
-3. Check the plan file for detailed task breakdown
-4. Continue where the previous session left off
-
-### Context Management
+## Context Management
 
 **Use `/clear` liberally** — Research shows a [39% performance drop](https://arxiv.org/pdf/2505.06120) when mixing topics. Clear context between unrelated tasks:
 
 | Scenario | Action |
 | -------- | ------ |
 | New feature/task | New chat or `/clear` |
-| Switching MVP steps | `/clear` then start fresh |
+| Switching phases/epics | `/clear` then start fresh |
 | 20+ turns elapsed | Start fresh |
 | Research vs implementation | Separate chats |
 

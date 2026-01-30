@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "gap-report",
+  "description": "Output of the gap-analyzer agent. Identifies testing gaps, missing coverage, and prioritized actions.",
+  "type": "object",
+  "required": ["repoName", "generatedDate", "sourceFiles", "confidence", "summary", "endpointCoverage", "authGaps", "dataGaps", "dependencyGaps", "documentationGaps", "errorHandlingGaps", "prioritizedActions"],
+  "properties": {
+    "repoName": { "type": "string" },
+    "generatedDate": { "type": "string", "format": "date-time" },
+    "sourceFiles": { "type": "array", "items": { "type": "string" } },
+    "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+
+    "summary": {
+      "type": "object",
+      "required": ["totalEndpoints", "endpointsWithTests", "endpointsWithoutTests", "coverageEstimate"],
+      "properties": {
+        "totalEndpoints": { "type": "integer" },
+        "endpointsWithTests": { "type": "integer" },
+        "endpointsWithoutTests": { "type": "integer" },
+        "coverageEstimate": { "type": "string" },
+        "criticalGaps": { "type": "integer" },
+        "highGaps": { "type": "integer" },
+        "mediumGaps": { "type": "integer" },
+        "lowGaps": { "type": "integer" }
+      }
+    },
+
+    "endpointCoverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["method", "path", "hasTest", "severity"],
+        "properties": {
+          "method": { "type": "string" },
+          "path": { "type": "string" },
+          "hasTest": { "type": "boolean" },
+          "severity": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+          "reason": { "type": "string" },
+          "searchedIn": { "type": "array", "items": { "type": "string" } },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+
+    "authGaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap", "severity"],
+        "properties": {
+          "gap": { "type": "string" },
+          "severity": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+          "relatedEndpoints": { "type": ["string", "array"], "items": { "type": "string" } },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+
+    "dataGaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap", "severity"],
+        "properties": {
+          "gap": { "type": "string" },
+          "severity": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+          "entity": { "type": "string" },
+          "field": { "type": ["string", "null"] },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+
+    "dependencyGaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap", "severity"],
+        "properties": {
+          "gap": { "type": "string" },
+          "severity": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+          "dependency": { "type": "string" },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+
+    "documentationGaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap", "severity"],
+        "properties": {
+          "gap": { "type": "string" },
+          "severity": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+
+    "errorHandlingGaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap", "severity"],
+        "properties": {
+          "gap": { "type": "string" },
+          "severity": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+          "endpoint": { "type": "string" },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+
+    "prioritizedActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rank", "action", "severity"],
+        "properties": {
+          "rank": { "type": "integer" },
+          "action": { "type": "string" },
+          "gapCount": { "type": "integer" },
+          "severity": { "type": "string", "enum": ["Critical", "High", "Medium", "Low"] },
+          "effort": { "type": "string", "enum": ["Low", "Medium", "High"] }
+        }
+      }
+    }
+  }
+}
